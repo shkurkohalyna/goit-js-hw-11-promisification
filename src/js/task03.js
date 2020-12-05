@@ -1,17 +1,44 @@
-export const delay = ms => {
-  
-  const promise = new Promise((resolve, reject) => {
+export const randomIntegerFromInterval = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const makeTransaction = (transaction) => {
+  const delay = randomIntegerFromInterval(200, 500);
+   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
-    const time = ms
-    resolve(time);
-  }, ms);
-  });  
+      const canProcess = Math.random() > 0.3;
+
+      if (canProcess) {
+        resolve({ id: transaction.id, time: delay });
+      } 
+        reject({id: transaction.id});
+      
+    }, delay);
+   });
   return promise;
 };
 
-const logger = time => console.log(`Resolved after ${time}ms`);
+const logSuccess = ({ id, time }) => {
+  console.log(`Transaction ${id} processed in ${time}ms`);
+};
 
-// Вызовы функции для проверки
-delay(2000).then(logger); // Resolved after 2000ms
-delay(1000).then(logger); // Resolved after 1000ms
-delay(1500).then(logger); // Resolved after 1500ms
+const logError = ({ id }) => {
+  console.warn(`Error processing transaction ${id}. Please try again later.`);
+};
+
+
+makeTransaction({ id: 70, amount: 150 })
+  .then(logSuccess)
+  .catch(logError);
+
+makeTransaction({ id: 71, amount: 230 })
+  .then(logSuccess)
+  .catch(logError);
+
+makeTransaction({ id: 72, amount: 75 })
+  .then(logSuccess)
+  .catch(logError);
+
+makeTransaction({ id: 73, amount: 100 })
+  .then(logSuccess)
+  .catch(logError);
